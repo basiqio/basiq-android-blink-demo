@@ -31,7 +31,7 @@ public class Requester {
     public void getUser() {
         RequestQueue queue = Volley.newRequestQueue((Context) this.ctx);
         //String url = "https://au-api.basiq.io/oauth2/token";
-        String url = "http://ec2-34-242-249-39.eu-west-1.compute.amazonaws.com/user";
+        String url = "http://192.168.2.97/user";
         JSONObject jsonBody = new JSONObject();
 
         try {
@@ -55,13 +55,6 @@ public class Requester {
                 Requester.this.ctx.onUserActionFailure(error);
             }
         }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("email", "nenadspp@gmail.com");
-
-                return params;
-            }
 
             @Override
             public String getBodyContentType() {
@@ -77,14 +70,59 @@ public class Requester {
                     return null;
                 }
             }
+        };
+
+        theRequest.setRetryPolicy(new DefaultRetryPolicy(
+                10000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
 
-            /*@Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String,String> params = new HashMap<String, String>();
-                params.put("Content-Type","application/x-www-form-urlencoded");
-                return params;
-            }*/
+        queue.add(theRequest);
+    }
+
+    public void getToken() {
+        RequestQueue queue = Volley.newRequestQueue((Context) this.ctx);
+        //String url = "https://au-api.basiq.io/oauth2/token";
+        String url = "http://192.168.2.97/access_token";
+        JSONObject jsonBody = new JSONObject();
+
+        try {
+            jsonBody.put("client_id", "in12ij3n1onb12");
+        } catch (JSONException ex) {
+            System.out.println("JSON EXCEPTION: " + ex.toString());
+        }
+        final String requestBody = jsonBody.toString();
+
+        Log.v("Response.Start", "Starting the request");
+
+        // Request a string response from the provided URL.
+        JsonObjectRequest theRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Requester.this.ctx.onTokenActionSuccess(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Requester.this.ctx.onTokenActionFailure(error);
+            }
+        }) {
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+            @Override
+            public byte[] getBody() {
+                try {
+                    return requestBody == null ? null : requestBody.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", requestBody, "utf-8");
+                    return null;
+                }
+            }
         };
 
         theRequest.setRetryPolicy(new DefaultRetryPolicy(

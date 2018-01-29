@@ -2,6 +2,7 @@ package com.example.nlukic.webviewtest;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,13 +13,15 @@ import android.webkit.WebViewClient;
 public class ViewerFragment extends Fragment {
 
     private String userId;
+    private String accessToken;
 
     public ViewerFragment() {
 
     }
 
-    public ViewerFragment(String userId) {
+    public ViewerFragment(String userId, String accessToken) {
         this.userId = userId;
+        this.accessToken = accessToken;
     }
 
     @Override
@@ -27,8 +30,12 @@ public class ViewerFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.webview_layout, container, false);
 
+        String url = "http://192.168.2.97?user_id="+this.userId+"&access_token="+this.accessToken;
+
+        Log.v("Opening URL", url);
+
         WebView myWebView = (WebView) view.findViewById(R.id.webview);
-        myWebView.loadUrl("http://192.168.2.97?user_id="+this.userId);
+        myWebView.loadUrl(url);
         //myWebView.loadUrl("http://www.google.com");
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.VolleyError;
@@ -23,6 +24,7 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity implements UserRequestListener {
 
     private String userId;
+    private String accessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +39,20 @@ public class MainActivity extends AppCompatActivity implements UserRequestListen
             @Override
             public void onClick(View view) {
 
+                if (MainActivity.this.userId == null || MainActivity.this.accessToken == null) {
+                    CharSequence text = "Application is loading initial data!";
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(MainActivity.this, text, duration);
+                    toast.show();
+
+                    Log.v("AttemptedWebview", "UserID: " + MainActivity.this.userId + " | Token: " + MainActivity.this.accessToken);
+
+                    return;
+                }
+
                 // Create new fragment and transaction
-                Fragment newFragment = new ViewerFragment(MainActivity.this.userId);
+                Fragment newFragment = new ViewerFragment(MainActivity.this.userId, MainActivity.this.accessToken);
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
                 // Replace whatever is in the fragment_container view with this fragment,
@@ -50,6 +64,13 @@ public class MainActivity extends AppCompatActivity implements UserRequestListen
                 transaction.commit();
             }
         });
+
+        try {
+            (new Requester(this)).getToken();
+        } catch (JSONException ex) {
+            Log.v("Requester.Exception", ex.getMessage());
+        }
+
 
         try {
             (new Requester(this)).getUser();
@@ -85,6 +106,29 @@ public class MainActivity extends AppCompatActivity implements UserRequestListen
 
     @Override
     public void onUserActionFailure(VolleyError error) {
+        NetworkResponse networkResponse = error.networkResponse;
+        if (networkResponse != null && networkResponse.data != null) {
+            String jsonError = new String(networkResponse.data);
+            Log.v("Response.OnError", "Response is: " + jsonError);
+        }
+        Log.v("Response.OnError", error.toString());
+    }
+
+
+    @Override
+    public void onTokenActionSuccess(JSONObject resp) {
+        try {
+            JSONObject result = resp.getJSONObject("result");
+            Log.v("onUserActionSuccess", "AccessToken: " + result.getString("access_token"));
+            this.accessToken = result.getString("access_token");
+        } catch (JSONException ex) {
+            Log.v("onTokenActionSuccess", ex.toString());
+        }
+        Log.v("onTokenActionSuccess", "Response is: " + resp.toString());
+    }
+
+    @Override
+    public void onTokenActionFailure(VolleyError error) {
         NetworkResponse networkResponse = error.networkResponse;
         if (networkResponse != null && networkResponse.data != null) {
             String jsonError = new String(networkResponse.data);
