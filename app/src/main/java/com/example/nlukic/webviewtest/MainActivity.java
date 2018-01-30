@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements UserRequestListen
             Log.v("Requester.Exception", ex.getMessage());
         }
 
-
         try {
             (new Requester(this)).getUser();
         } catch (JSONException ex) {

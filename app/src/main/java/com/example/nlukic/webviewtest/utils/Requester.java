@@ -17,8 +17,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Requester {
 
@@ -31,7 +29,7 @@ public class Requester {
     public void getUser() {
         RequestQueue queue = Volley.newRequestQueue((Context) this.ctx);
         //String url = "https://au-api.basiq.io/oauth2/token";
-        String url = "http://192.168.2.97/user";
+        String url = Config.getConfigValue((Context) this.ctx, "api_url")+"/user";
         JSONObject jsonBody = new JSONObject();
 
         try {
@@ -84,7 +82,7 @@ public class Requester {
     public void getToken() {
         RequestQueue queue = Volley.newRequestQueue((Context) this.ctx);
         //String url = "https://au-api.basiq.io/oauth2/token";
-        String url = "http://192.168.2.97/access_token";
+        String url = Config.getConfigValue((Context) this.ctx, "api_url")+"/access_token";
         JSONObject jsonBody = new JSONObject();
 
         try {
