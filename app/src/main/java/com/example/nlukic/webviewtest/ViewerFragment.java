@@ -17,12 +17,11 @@ public class ViewerFragment extends Fragment {
     private String userId;
     private String accessToken;
 
-    public ViewerFragment() {
 
-    }
-
-    public ViewerFragment(String userId, String accessToken) {
+    public void setUserId(String userId) {
         this.userId = userId;
+    }
+    public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
 

@@ -21,15 +21,17 @@ import java.io.UnsupportedEncodingException;
 public class Requester {
 
     private UserRequestListener ctx;
+    private String host;
 
     public Requester (UserRequestListener ctx) throws JSONException {
         this.ctx = (UserRequestListener) ctx;
+        this.host = Config.getConfigValue((Context) this.ctx, "api_url");
     }
 
-    public void getUser() {
+    public void createUser() {
         RequestQueue queue = Volley.newRequestQueue((Context) this.ctx);
         //String url = "https://au-api.basiq.io/oauth2/token";
-        String url = Config.getConfigValue((Context) this.ctx, "api_url")+"/user";
+        String url = this.host+"/user";
         JSONObject jsonBody = new JSONObject();
 
         try {
@@ -38,9 +40,7 @@ public class Requester {
             System.out.println("JSON EXCEPTION: " + ex.toString());
         }
         final String requestBody = jsonBody.toString();
-
         Log.v("Response.Start", "Starting the request");
-
         // Request a string response from the provided URL.
         JsonObjectRequest theRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
             @Override
@@ -79,10 +79,10 @@ public class Requester {
         queue.add(theRequest);
     }
 
-    public void getToken() {
+    public void getAccessToken() {
         RequestQueue queue = Volley.newRequestQueue((Context) this.ctx);
         //String url = "https://au-api.basiq.io/oauth2/token";
-        String url = Config.getConfigValue((Context) this.ctx, "api_url")+"/access_token";
+        String url =this.host+"/access_token";
         JSONObject jsonBody = new JSONObject();
 
         try {
@@ -91,9 +91,7 @@ public class Requester {
             System.out.println("JSON EXCEPTION: " + ex.toString());
         }
         final String requestBody = jsonBody.toString();
-
         Log.v("Response.Start", "Starting the request");
-
         // Request a string response from the provided URL.
         JsonObjectRequest theRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
             @Override

@@ -19,8 +19,8 @@ public class WebAppInterface {
     }
 
     @JavascriptInterface
-    public void setConnectionId(String token) {
-        transitionToFragment(token);
+    public void setConnectionId(String connectionId) {
+        transitionToFragment(connectionId);
     }
 
     @JavascriptInterface
@@ -31,16 +31,12 @@ public class WebAppInterface {
     private void transitionToFragment(String text) {
         AppCompatActivity activity = ((AppCompatActivity) mContext);
 
-        MainFragment newFragment = new MainFragment(text);
+        MainFragment mainFragment = new MainFragment();
+        mainFragment.setTextContent(text);
 
         FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.replace(R.id.fragment_container, newFragment);
+        transaction.replace(R.id.fragment_container, mainFragment);
         transaction.addToBackStack(null);
-
-        // Commit the transaction
         transaction.commit();
     }
 }

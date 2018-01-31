@@ -1,6 +1,5 @@
 package com.example.nlukic.webviewtest;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
@@ -38,56 +37,43 @@ public class MainActivity extends AppCompatActivity implements UserRequestListen
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (MainActivity.this.userId == null || MainActivity.this.accessToken == null) {
                     CharSequence text = "Application is loading initial data!";
                     int duration = Toast.LENGTH_SHORT;
 
                     Toast toast = Toast.makeText(MainActivity.this, text, duration);
                     toast.show();
-
                     Log.v("AttemptedWebview", "UserID: " + MainActivity.this.userId + " | Token: " + MainActivity.this.accessToken);
 
                     return;
                 }
 
                 // Create new fragment and transaction
-                Fragment newFragment = new ViewerFragment(MainActivity.this.userId, MainActivity.this.accessToken);
+                ViewerFragment viewerFragment = new ViewerFragment();
+                viewerFragment.setUserId(MainActivity.this.userId);
+                viewerFragment.setAccessToken(MainActivity.this.accessToken);
+
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack
-                transaction.replace(R.id.fragment_container, newFragment);
+                transaction.replace(R.id.fragment_container, viewerFragment);
                 transaction.addToBackStack(null);
-
-                // Commit the transaction
                 transaction.commit();
             }
         });
 
-        try {
-            (new Requester(this)).getToken();
-        } catch (JSONException ex) {
+        try{
+            Requester requester = new Requester(this);
+            requester.getAccessToken();
+            requester.createUser();
+        }catch(JSONException ex){
             Log.v("Requester.Exception", ex.getMessage());
         }
-
-        try {
-            (new Requester(this)).getUser();
-        } catch (JSONException ex) {
-            Log.v("Requester.Exception", ex.getMessage());
-        }
-
         // Create new fragment and transaction
-        MainFragment newFragment = new MainFragment("Click on the fab button to link your account.");
+        MainFragment mainFragment = new MainFragment();
+        mainFragment.setTextContent("Click on the fab button to link your account.");
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        // Replace whatever is in the fragment_container view with this fragment,
-        // and add the transaction to the back stack
-        transaction.add(R.id.fragment_container, newFragment);
+        transaction.add(R.id.fragment_container, mainFragment);
         transaction.addToBackStack(null);
-
-        // Commit the transaction
         transaction.commit();
     }
 
@@ -95,12 +81,11 @@ public class MainActivity extends AppCompatActivity implements UserRequestListen
     public void onUserActionSuccess(JSONObject resp) {
         try {
             JSONObject result = resp.getJSONObject("result");
-            Log.v("onUserActionSuccess", "User ID: " + result.getString("id"));
             this.userId = result.getString("id");
+            Log.v("onUserActionSuccess", "User ID: " + this.userId);
         } catch (JSONException ex) {
             Log.v("onUserActionSuccess", ex.toString());
         }
-        Log.v("onUserActionSuccess", "Response is: " + resp.toString());
     }
 
     @Override
@@ -113,17 +98,15 @@ public class MainActivity extends AppCompatActivity implements UserRequestListen
         Log.v("Response.OnError", error.toString());
     }
 
-
     @Override
     public void onTokenActionSuccess(JSONObject resp) {
         try {
             JSONObject result = resp.getJSONObject("result");
-            Log.v("onUserActionSuccess", "AccessToken: " + result.getString("access_token"));
             this.accessToken = result.getString("access_token");
+            Log.v("onUserActionSuccess", "AccessToken: " + this.accessToken);
         } catch (JSONException ex) {
             Log.v("onTokenActionSuccess", ex.toString());
         }
-        Log.v("onTokenActionSuccess", "Response is: " + resp.toString());
     }
 
     @Override

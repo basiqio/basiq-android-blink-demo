@@ -11,11 +11,8 @@ public class MainFragment extends Fragment {
 
     private String textContent;
 
-    public MainFragment() {
-    }
-
-    public MainFragment(String text) {
-        this.textContent = text;
+    public void setTextContent(String textContent) {
+        this.textContent = textContent;
     }
 
     @Override
@@ -23,12 +20,8 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.content_main, container, false);
-
-
         TextView textView = (TextView) view.findViewById(R.id.textina);
-
         textView.setText(this.textContent);
-
         return view;
     }
 }
