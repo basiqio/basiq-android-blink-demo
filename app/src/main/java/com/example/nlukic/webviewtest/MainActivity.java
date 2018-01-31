@@ -23,7 +23,7 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity implements UserRequestListener {
 
     private String userId;
-    private String accessToken;
+    private String clientAccessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +37,13 @@ public class MainActivity extends AppCompatActivity implements UserRequestListen
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (MainActivity.this.userId == null || MainActivity.this.accessToken == null) {
+                if (MainActivity.this.userId == null || MainActivity.this.clientAccessToken == null) {
                     CharSequence text = "Application is loading initial data!";
                     int duration = Toast.LENGTH_SHORT;
 
                     Toast toast = Toast.makeText(MainActivity.this, text, duration);
                     toast.show();
-                    Log.v("AttemptedWebview", "UserID: " + MainActivity.this.userId + " | Token: " + MainActivity.this.accessToken);
+                    Log.v("AttemptedWebview", "UserID: " + MainActivity.this.userId + " | Token: " + MainActivity.this.clientAccessToken);
 
                     return;
                 }
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements UserRequestListen
                 // Create new fragment and transaction
                 ViewerFragment viewerFragment = new ViewerFragment();
                 viewerFragment.setUserId(MainActivity.this.userId);
-                viewerFragment.setAccessToken(MainActivity.this.accessToken);
+                viewerFragment.setAccessToken(MainActivity.this.clientAccessToken);
 
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, viewerFragment);
@@ -102,8 +102,8 @@ public class MainActivity extends AppCompatActivity implements UserRequestListen
     public void onTokenActionSuccess(JSONObject resp) {
         try {
             JSONObject result = resp.getJSONObject("result");
-            this.accessToken = result.getString("access_token");
-            Log.v("onUserActionSuccess", "AccessToken: " + this.accessToken);
+            this.clientAccessToken = result.getString("access_token");
+            Log.v("onUserActionSuccess", "AccessToken: " + this.clientAccessToken);
         } catch (JSONException ex) {
             Log.v("onTokenActionSuccess", ex.toString());
         }
