@@ -45,6 +45,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="#024767"
+        app:borderWidth="0px"
         app:fabSize="normal"
         app:srcCompat="@android:drawable/star_big_on" />
 

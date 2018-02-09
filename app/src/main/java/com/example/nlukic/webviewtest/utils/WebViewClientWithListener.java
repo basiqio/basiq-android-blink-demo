@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
+import com.example.nlukic.webviewtest.MainActivity;
 import com.example.nlukic.webviewtest.MainFragment;
 import com.example.nlukic.webviewtest.R;
 
@@ -50,12 +52,39 @@ public class WebViewClientWithListener extends WebViewClient {
     }
 
     private void parseEventData(String event, JSONObject payload) {
+        JSONObject data = payload;
+
         try {
+
+            if (payload.has("data")) {
+                data = payload.getJSONObject("data");
+            }
+
             switch (event) {
-                case "connection":
-                    setConnectionId(payload.getString("id"));
+                case "job":
+                    if (!payload.getBoolean("success")) {
+                        CharSequence errorText = data.getString("detail");
+
+                        Toast toast = Toast.makeText(this.mContext, errorText, Toast.LENGTH_SHORT);
+                        toast.show();
+                        return;
+                    }
+                    CharSequence text = "ID of the job: " + data.getString("id");
+
+                    Toast jobToast = Toast.makeText(this.mContext, text, Toast.LENGTH_SHORT);
+                    jobToast.show();
                     break;
-                case "cancelation":
+                case "connection":
+                    if (!payload.getBoolean("success")) {
+                        CharSequence errorText = data.getString("detail");
+
+                        Toast connectionToast = Toast.makeText(this.mContext, errorText, Toast.LENGTH_SHORT);
+                        connectionToast.show();
+                        return;
+                    }
+                    setConnectionId(data.getString("id"));
+                    break;
+                case "cancellation":
                     cancelActions();
                     break;
             }

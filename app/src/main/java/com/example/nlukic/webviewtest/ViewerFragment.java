@@ -32,7 +32,7 @@ public class ViewerFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.webview_layout, container, false);
 
-        String url = Config.getConfigValue(this.getActivity(), "api_url")+"?user_id="+this.userId+"&access_token="+this.accessToken;
+        String url = Config.getConfigValue(this.getActivity(), "views_url")+"?user_id="+this.userId+"&access_token="+this.accessToken;
 
         Log.v("Opening URL", url);
 
