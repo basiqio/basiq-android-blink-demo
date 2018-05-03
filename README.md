@@ -19,6 +19,10 @@ api_url=http://0.0.0.0
 views_url=http://js.basiq.io/index.html
 ```
 
+### Server requirements
+
 To run the example, your API must expose two endpoints, ```/access_token``` and ```/user```. These
 endpoints must return the access_token that was retrieved from Basiq's API with the CLIENT_CREDENTIALS
 scope, and a user_id that will be used to create the connection.
+
+You can find an example server implementation [here](https://github.com/basiqio/basiq-blink-server-example)
