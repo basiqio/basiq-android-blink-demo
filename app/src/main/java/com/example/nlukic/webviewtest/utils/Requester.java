@@ -40,7 +40,7 @@ public class Requester {
             System.out.println("JSON EXCEPTION: " + ex.toString());
         }
         final String requestBody = jsonBody.toString();
-        Log.v("Response.Start", "Starting the request");
+        Log.v("Response.Start", "Starting the create user request");
         // Request a string response from the provided URL.
         JsonObjectRequest theRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
             @Override
@@ -91,7 +91,7 @@ public class Requester {
             System.out.println("JSON EXCEPTION: " + ex.toString());
         }
         final String requestBody = jsonBody.toString();
-        Log.v("Response.Start", "Starting the request");
+        Log.v("Response.Start", "Starting the access_token request");
         // Request a string response from the provided URL.
         JsonObjectRequest theRequest = new JsonObjectRequest(Request.Method.POST, url, jsonBody, new Response.Listener<JSONObject>() {
             @Override
